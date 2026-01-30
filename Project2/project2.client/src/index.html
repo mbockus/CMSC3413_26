@@ -6,11 +6,16 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    p {
+      color: orange;
+    }
+  </style>
 </head>
 <body>
   <section id="nav">
     <nav>
-      <ul>
+      <ul class="error">
         <li><a href="#aboutme">About Me</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -18,7 +23,7 @@
   </section>
 
   <section id="aboutme">
-    <img width="100" height="200" src="https://piedmontnewsonline.com/wp-content/uploads/2024/11/MikeVotedAbsentee-768x1024.jpg" />
+    <img class="error" width="100" height="200" src="https://piedmontnewsonline.com/wp-content/uploads/2024/11/MikeVotedAbsentee-768x1024.jpg" />
     <p>This is my paragraph about myself</p>
     <p>This is another paragraph</p>
     <ol>
@@ -34,13 +39,34 @@
         <label for="name">Name</label>
         <input type="text" id="name" name="name" required minlength="3" />
       </div>
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required/>
+      </div>
+      <div>
+        <label for="comments">Comments</label>
+        <textarea id="comments" name="comments" rows="5" maxlength="200"></textarea>
+      </div>
       <button type="submit">Submit</button>
     </form>
   </section>
 
   <section id="portfolio">
     <a href="https://developer.mozilla.org/en-US/docs/Web">MDN Docs</a>
+    <p>This paragraph <a href="https://developer.mozilla.org/en-US/docs/Web">contains</a> some <span style="color:red;">inline text</span> with different properties. </p>
 
+    <table border="1">
+      <tr>
+        <th>Column 1</th>
+        <th>Column 2</th>
+        <th>Column 3</th>
+      </tr>
+      <tr>
+        <td>First column of text</td>
+        <td>Second column of text</td>
+        <td>Third column of text</td>
+      </tr>
+    </table>
   </section>
 
 
