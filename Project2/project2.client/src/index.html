@@ -6,26 +6,79 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- METHOD 2: Internal Stylesheet using <style> tag -->
   <style>
+    /* This is an internal stylesheet - styles defined here only apply to this page
+       Useful for page-specific styles that won't be reused elsewhere */
+    
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #007bff;
+      padding-bottom: 10px;
+    }
+    
+    /* This p rule conflicts with styles.css - cascade order determines winner */
     p {
-      color: orange;
+      color: orange; /* Same as external stylesheet */
     }
   </style>
 </head>
 <body>
+  <h1>CSS Learning Examples</h1>
+
+  <!-- ==================================
+       CSS APPLICATION METHODS
+       ================================== -->
+  
+  <!-- METHOD 1: External Stylesheet (styles.css) - linked in angular.json -->
+  <!-- This is the BEST practice - keeps styles separate and reusable -->
+  
+  <!-- METHOD 3: Inline Styles using style attribute -->
+  <!-- Highest specificity (1,0,0,0) but NOT recommended - hard to maintain -->
+  <p style="color: red; font-weight: bold; background-color: lightyellow;">
+    This paragraph uses INLINE STYLES (style attribute). 
+    Specificity: 1,0,0,0 - overrides all other methods!
+  </p>
+
+  <!-- ==================================
+       SELECTOR EXAMPLES
+       ================================== -->
   <section id="nav">
+    <h2>Navigation (Element, Class, ID selectors)</h2>
     <nav>
+      <!-- Class selector example: .error from styles.css -->
       <ul class="error">
         <li><a href="#aboutme">About Me</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
       </ul>
     </nav>
   </section>
 
-  <section id="aboutme">
-    <img class="error" width="100" height="200" src="https://piedmontnewsonline.com/wp-content/uploads/2024/11/MikeVotedAbsentee-768x1024.jpg" />
-    <p>This is my paragraph about myself</p>
-    <p>This is another paragraph</p>
+  <!-- ID selector: #aboutme (Specificity: 0,1,0,0) -->
+    <section id="aboutme">
+    <h2>About Me Section</h2>
+    
+    <!-- Multiple classes on one element -->
+    <img class="error highlight" width="100" height="200" 
+         src="https://piedmontnewsonline.com/wp-content/uploads/2024/11/MikeVotedAbsentee-768x1024.jpg" 
+         alt="Profile image" />
+    
+    <!-- Element selector: p (Specificity: 0,0,0,1) -->
+    <p>This is my paragraph about myself. Element selector makes this orange.</p>
+    
+    <!-- Class selector overrides element selector -->
+    <p style="color:pink;" class="special">This paragraph has class="special" - check which color it is!</p>
+    
+    <!-- INHERITANCE example - ol inherits font properties from section -->
     <ol>
       <li>Everything went terribly.</li>
       <li>Angular CLI wasn't installed so it wouldn't let me create the project</li>
@@ -33,7 +86,15 @@
     </ol>
   </section>
 
+  <!-- ==================================
+       SPECIFICITY EXAMPLES
+       ================================== -->
   <section id="contact">
+    <h2>Contact Form (Specificity Demo)</h2>
+    
+    <!-- This paragraph inherits #contact background and has its own color rules -->
+    <p>Specificity calculation: inline (1,0,0,0) > id (0,1,0,0) > class (0,0,1,0) > element (0,0,0,1)</p>
+    
     <form>
       <div>
         <label for="name">Name</label>
@@ -47,29 +108,122 @@
         <label for="comments">Comments</label>
         <textarea id="comments" name="comments" rows="5" maxlength="200"></textarea>
       </div>
-      <button type="submit">Submit</button>
+      <!-- DRY principle: reusable button classes -->
+      <button type="submit" class="btn btn-success">Submit</button>
     </form>
   </section>
 
+  <!-- ==================================
+       DRY PRINCIPLE & MULTIPLE CLASSES
+       ================================== -->
   <section id="portfolio">
-    <a href="https://developer.mozilla.org/en-US/docs/Web">MDN Docs</a>
-    <p>This paragraph <a href="https://developer.mozilla.org/en-US/docs/Web">contains</a> some <span style="color:red;">inline text</span> with different properties. </p>
+    <h2>Portfolio & CSS Properties Demo</h2>
+    
+    <div style="margin-bottom: 20px;">
+      <h3>Multiple Class Example (DRY - Don't Repeat Yourself)</h3>
+      <p>Classes are combined. The ORDER in CSS file matters for conflicts, NOT HTML order!</p>
+      
+      <!-- Each button uses base .btn class + color class + optional size class -->
+      <button class="btn btn-primary">Primary Button</button>
+      <button class="btn btn-success">Success Button</button>
+      <button class="btn btn-danger">Danger Button</button>
+      <button class="btn btn-primary btn-large">Large Primary</button>
+      <button class="btn btn-danger btn-small">Small Danger</button>
+    </div>
 
-    <table border="1">
-      <tr>
-        <th>Column 1</th>
-        <th>Column 2</th>
-        <th>Column 3</th>
-      </tr>
-      <tr>
-        <td>First column of text</td>
-        <td>Second column of text</td>
-        <td>Third column of text</td>
-      </tr>
-    </table>
+    <div style="margin-bottom: 20px;">
+      <h3>Class Ordering Demo</h3>
+      <p class="color-red color-blue">Order in HTML: red then blue - but check the actual color!</p>
+      <p class="color-blue color-red">Order in HTML: blue then red - same color as above!</p>
+      <p>Both are the SAME color because .color-blue is LAST in the CSS file.</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3>Box Model Demo</h3>
+      <div class="box-demo">
+        Content area. Inspect this in DevTools (F12) to see:
+        Content → Padding → Border → Margin
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3>Links & Inheritance</h3>
+      <a href="https://developer.mozilla.org/en-US/docs/Web">MDN Docs</a>
+      <p>This paragraph <a href="https://developer.mozilla.org/en-US/docs/Web">contains</a> 
+         some <span style="color:red;">inline text</span> with different properties.</p>
+    </div>
+
+    <div>
+      <h3>Table Example</h3>
+      <table border="1">
+        <tr>
+          <th>Column 1</th>
+          <th>Column 2</th>
+          <th>Column 3</th>
+        </tr>
+        <tr>
+          <td>First column of text</td>
+          <td>Second column of text</td>
+          <td>Third column of text</td>
+        </tr>
+        <tr>
+          <td>More data</td>
+          <td>Even more data</td>
+          <td>So much data</td>
+        </tr>
+      </table>
+    </div>
   </section>
 
+  <!-- ==================================
+       DEVELOPER TOOLS TIP
+       ================================== -->
+  <section style="background-color: #fff9c4; padding: 15px; margin-top: 20px; border-left: 4px solid #fbc02d;">
+    <h3>🔍 DevTools Inspector (F12)</h3>
+    <p><strong>Right-click any element → Inspect</strong> to see:</p>
+    <ul>
+      <li>All applied styles and their source (external, internal, inline)</li>
+      <li>Specificity and which rules are overridden (crossed out)</li>
+      <li>Box model visualization (margin, border, padding, content)</li>
+      <li>Computed final values for all properties</li>
+      <li>Live editing to test changes!</li>
+    </ul>
+  </section>
 
-  
+  <!-- ==================================
+       JAVASCRIPT FOR FORM SUBMISSION
+       ================================== -->
+  <script>
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the form element
+      const form = document.querySelector('#contact form');
+      
+      // Add submit event listener
+      form.addEventListener('submit', function(event) {
+        // Prevent default form submission (page reload)
+        event.preventDefault();
+        
+        // Get form values (optional - if you want to personalize the message)
+        const name = document.getElementById('name').value;
+        
+        // Replace form content with thank you message
+        form.innerHTML = `
+          <div style="text-align: center; padding: 40px;">
+            <h3 style="color: #28a745; font-size: 24px;">Thank You${name ? ', ' + name : ''}! 🎉</h3>
+            <p style="font-size: 18px; margin-top: 20px;">
+              Your message has been successfully submitted.
+            </p>
+            <p style="color: #666; margin-top: 10px;">
+              We'll get back to you soon!
+            </p>
+            <button type="button" class="btn btn-primary" onclick="location.reload()" style="margin-top: 20px;">
+              Submit Another Message
+            </button>
+          </div>
+        `;
+      });
+    });
+  </script>
 </body>
 </html>
