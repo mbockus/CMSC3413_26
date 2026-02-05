@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Project2Client</title>
+  <title>Project2Client - CSS & Bootstrap Examples</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -12,186 +12,480 @@
     /* This is an internal stylesheet - styles defined here only apply to this page
        Useful for page-specific styles that won't be reused elsewhere */
     
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    h1 {
-      color: #333;
-      border-bottom: 3px solid #007bff;
-      padding-bottom: 10px;
-    }
-    
     /* This p rule conflicts with styles.css - cascade order determines winner */
     p {
       color: orange; /* Same as external stylesheet */
     }
+    
+    /* Custom styles that enhance Bootstrap */
+    .navbar-brand {
+      font-weight: bold;
+    }
+    
+    section {
+      margin-bottom: 3rem;
+    }
   </style>
 </head>
 <body>
-  <h1>CSS Learning Examples</h1>
-
   <!-- ==================================
-       CSS APPLICATION METHODS
+       BOOTSTRAP NAVBAR - Responsive navigation component
+       Collapses to hamburger menu on small screens
        ================================== -->
-  
-  <!-- METHOD 1: External Stylesheet (styles.css) - linked in angular.json -->
-  <!-- This is the BEST practice - keeps styles separate and reusable -->
-  
-  <!-- METHOD 3: Inline Styles using style attribute -->
-  <!-- Highest specificity (1,0,0,0) but NOT recommended - hard to maintain -->
-  <p style="color: red; font-weight: bold; background-color: lightyellow;">
-    This paragraph uses INLINE STYLES (style attribute). 
-    Specificity: 1,0,0,0 - overrides all other methods!
-  </p>
-
-  <!-- ==================================
-       SELECTOR EXAMPLES
-       ================================== -->
-  <section id="nav">
-    <h2>Navigation (Element, Class, ID selectors)</h2>
-    <nav>
-      <!-- Class selector example: .error from styles.css -->
-      <ul class="error">
-        <li><a href="#aboutme">About Me</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#portfolio">Portfolio</a></li>
-      </ul>
-    </nav>
-  </section>
-
-  <!-- ID selector: #aboutme (Specificity: 0,1,0,0) -->
-    <section id="aboutme">
-    <h2>About Me Section</h2>
-    
-    <!-- Multiple classes on one element -->
-    <img class="error highlight" width="100" height="200" 
-         src="mike.jpg" 
-         alt="Profile image" />
-    
-    <!-- Element selector: p (Specificity: 0,0,0,1) -->
-    <p>This is my paragraph about myself. Element selector makes this orange.</p>
-    
-    <!-- Class selector overrides element selector -->
-    <p style="color:pink;" class="special">This paragraph has class="special" - check which color it is!</p>
-    
-    <!-- INHERITANCE example - ol inherits font properties from section -->
-    <ol>
-      <li>Everything went terribly.</li>
-      <li>Angular CLI wasn't installed so it wouldn't let me create the project</li>
-      <li>Publish failed because azure was down</li>
-    </ol>
-  </section>
-
-  <!-- ==================================
-       SPECIFICITY EXAMPLES
-       ================================== -->
-  <section id="contact">
-    <h2>Contact Form (Specificity Demo)</h2>
-    
-    <!-- This paragraph inherits #contact background and has its own color rules -->
-    <p>Specificity calculation: inline (1,0,0,0) > id (0,1,0,0) > class (0,0,1,0) > element (0,0,0,1)</p>
-    
-    <form>
-      <div>
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required minlength="3" />
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">CSS Examples</a>
+      <!-- Hamburger button for mobile (visible on small screens) -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Collapsible navbar content -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#aboutme">About Me</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#responsive">Responsive</a></li>
+        </ul>
       </div>
-      <div>
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required/>
-      </div>
-      <div>
-        <label for="comments">Comments</label>
-        <textarea id="comments" name="comments" rows="5" maxlength="200"></textarea>
-      </div>
-      <!-- DRY principle: reusable button classes -->
-      <button type="submit" class="btn btn-success">Submit</button>
-    </form>
-  </section>
+    </div>
+  </nav>
 
-  <!-- ==================================
-       DRY PRINCIPLE & MULTIPLE CLASSES
-       ================================== -->
-  <section id="portfolio">
-    <h2>Portfolio & CSS Properties Demo</h2>
-    
-    <div style="margin-bottom: 20px;">
-      <h3>Multiple Class Example (DRY - Don't Repeat Yourself)</h3>
-      <p>Classes are combined. The ORDER in CSS file matters for conflicts, NOT HTML order!</p>
+  <!-- Bootstrap Container - Centers content and provides responsive padding -->
+  <div class="container">
+    <h1 class="text-center mb-4 pb-3 border-bottom border-primary">CSS & Bootstrap Learning Examples</h1>
+
+    <!-- ==================================
+         CSS APPLICATION METHODS
+         ================================== -->
+    <section>
+      <h2 class="mb-3">CSS Application Methods</h2>
       
-      <!-- Each button uses base .btn class + color class + optional size class -->
-      <button class="btn btn-primary">Primary Button</button>
-      <button class="btn btn-success">Success Button</button>
-      <button class="btn btn-danger">Danger Button</button>
-      <button class="btn btn-primary btn-large">Large Primary</button>
-      <button class="btn btn-danger btn-small">Small Danger</button>
-    </div>
-
-    <div style="margin-bottom: 20px;">
-      <h3>Class Ordering Demo</h3>
-      <p class="color-red color-blue">Order in HTML: red then blue - but check the actual color!</p>
-      <p class="color-blue color-red">Order in HTML: blue then red - same color as above!</p>
-      <p>Both are the SAME color because .color-blue is LAST in the CSS file.</p>
-    </div>
-
-    <div style="margin-bottom: 20px;">
-      <h3>Box Model Demo</h3>
-      <div class="box-demo">
-        Content area. Inspect this in DevTools (F12) to see:
-        Content → Padding → Border → Margin
+      <!-- Bootstrap Grid System - Responsive columns -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">METHOD 1: External Stylesheet</h5>
+              <p class="card-text">
+                <code>styles.css</code> - Linked in angular.json. 
+                <strong>Best practice</strong> - keeps styles separate and reusable.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">METHOD 2: Internal Stylesheet</h5>
+              <p class="card-text">
+                <code>&lt;style&gt;</code> tag - Styles defined in <code>&lt;head&gt;</code>. 
+                Useful for page-specific styles.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">METHOD 3: Inline Styles</h5>
+              <p class="card-text">
+                <code>style</code> attribute - Highest specificity (1,0,0,0) but 
+                <strong>NOT recommended</strong> - hard to maintain.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+      
+      <!-- Inline Style Example -->
+      <div class="alert alert-warning mt-3" role="alert" style="color: red; font-weight: bold; background-color: lightyellow;">
+        ⚠️ This alert uses INLINE STYLES (style attribute). Specificity: 1,0,0,0 - overrides all other methods!
+      </div>
+    </section>
 
-    <div style="margin-bottom: 20px;">
-      <h3>Links & Inheritance</h3>
-      <a href="https://developer.mozilla.org/en-US/docs/Web">MDN Docs</a>
-      <p>This paragraph <a href="https://developer.mozilla.org/en-US/docs/Web">contains</a> 
-         some <span style="color:red;">inline text</span> with different properties.</p>
-    </div>
 
-    <div>
-      <h3>Table Example</h3>
-      <table border="1">
-        <tr>
-          <th>Column 1</th>
-          <th>Column 2</th>
-          <th>Column 3</th>
-        </tr>
-        <tr>
-          <td>First column of text</td>
-          <td>Second column of text</td>
-          <td>Third column of text</td>
-        </tr>
-        <tr>
-          <td>More data</td>
-          <td>Even more data</td>
-          <td>So much data</td>
-        </tr>
-      </table>
-    </div>
-  </section>
+    <!-- ==================================
+         SELECTOR EXAMPLES & SPECIFICITY
+         ================================== -->
+    <section id="aboutme">
+      <h2 class="mb-3">About Me Section</h2>
+      
+      <!-- Bootstrap Grid with Responsive Image -->
+      <div class="row">
+        <!-- Image Column - Hidden on small screens (d-none), visible on md+ (d-md-block) -->
+        <div class="col-md-4 mb-3">
+          <img class="img-fluid rounded shadow d-none d-md-block error highlight" 
+               src="mike.jpg" 
+               alt="Profile image" />
+          <p class="text-muted small mt-2 d-none d-md-block">
+            📱 This image only shows on screens ≥768px (Bootstrap's md breakpoint)
+          </p>
+        </div>
+        
+        <!-- Content Column -->
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">CSS Selectors & Specificity</h5>
+              
+              <!-- Element selector: p (Specificity: 0,0,0,1) -->
+              <p>This is my paragraph about myself. Element selector makes this orange.</p>
+              
+              <!-- Class selector overrides element selector -->
+              <p style="color:pink;" class="special">
+                This paragraph has <code>class="special"</code> AND inline style. 
+                Inline wins! Specificity: 1,0,0,0
+              </p>
+              
+              <h6 class="mt-3">Specificity Examples:</h6>
+              <!-- INHERITANCE example - ol inherits font properties from section -->
+              <ol class="list-group list-group-numbered">
+                <li class="list-group-item">Element selector (p): 0,0,0,1</li>
+                <li class="list-group-item">Class selector (.error): 0,0,1,0</li>
+                <li class="list-group-item">ID selector (#aboutme): 0,1,0,0</li>
+                <li class="list-group-item">Inline style: 1,0,0,0</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================================
+         BOOTSTRAP FORM WITH FORM GROUPS
+         ================================== -->
+    <section id="contact">
+      <h2 class="mb-3">Contact Form (Bootstrap Form Groups)</h2>
+      
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">Get In Touch</h5>
+            </div>
+            <div class="card-body">
+              <!-- Specificity Note -->
+              <div class="alert alert-info" role="alert">
+                💡 <strong>Specificity calculation:</strong> 
+                inline (1,0,0,0) &gt; id (0,1,0,0) &gt; class (0,0,1,0) &gt; element (0,0,0,1)
+              </div>
+              
+              <!-- Bootstrap Validation Form 
+                   - needs-validation: Bootstrap validation class
+                   - novalidate: Disables browser's default validation UI
+              -->
+              <form class="needs-validation" novalidate>
+                <!-- Bootstrap Form Group for Name with Validation -->
+                <div class="mb-3">
+                  <label for="name" class="form-label fw-bold">Name</label>
+                  <input type="text" class="form-control" id="name" name="name" 
+                         placeholder="Enter your name" required minlength="3" maxlength="50" />
+                  <!-- Valid feedback - shown when input is valid -->
+                  <div class="valid-feedback">
+                    Looks good!
+                  </div>
+                  <!-- Invalid feedback - shown when input is invalid -->
+                  <div class="invalid-feedback">
+                    Please enter at least 3 characters.
+                  </div>
+                </div>
+                
+                <!-- Bootstrap Form Group for Email with Validation -->
+                <div class="mb-3">
+                  <label for="email" class="form-label fw-bold">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" 
+                         placeholder="your.email@example.com" required 
+                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+                  <div class="valid-feedback">
+                    Valid email address!
+                  </div>
+                  <div class="invalid-feedback">
+                    Please provide a valid email address (e.g., user@example.com).
+                  </div>
+                </div>
+                
+                <!-- Bootstrap Form Group for Comments with Validation -->
+                <div class="mb-3">
+                  <label for="comments" class="form-label fw-bold">Comments</label>
+                  <textarea class="form-control" id="comments" name="comments" rows="5" 
+                            required minlength="10" maxlength="200" 
+                            placeholder="Enter your message here (10-200 characters)..."></textarea>
+                  <div class="valid-feedback">
+                    Thank you for your message!
+                  </div>
+                  <div class="invalid-feedback">
+                    Please enter at least 10 characters (max 200).
+                  </div>
+                  <!-- Character counter -->
+                  <div class="form-text">
+                    <span id="charCount">0</span> / 200 characters
+                  </div>
+                </div>
+                
+                <!-- Bootstrap Grid for Buttons - Responsive layout -->
+                <div class="row">
+                  <div class="col-sm-6 mb-2 mb-sm-0">
+                    <button type="submit" class="btn btn-success w-100">
+                      <i class="bi bi-send"></i> Submit Form
+                    </button>
+                  </div>
+                  <div class="col-sm-6">
+                    <button type="reset" class="btn btn-outline-secondary w-100">
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================================
+         DRY PRINCIPLE & MULTIPLE CLASSES
+         ================================== -->
+    <section id="portfolio">
+      <h2 class="mb-3">Portfolio & CSS Properties Demo</h2>
+      
+      <div class="row">
+        <!-- DRY Principle Card -->
+        <div class="col-lg-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">DRY - Don't Repeat Yourself</h5>
+            </div>
+            <div class="card-body">
+              <p>Classes are combined. The ORDER in CSS file matters for conflicts, NOT HTML order!</p>
+              
+              <!-- Bootstrap Button Group - Responsive -->
+              <div class="d-grid gap-2 d-md-block">
+                <button class="btn btn-primary mb-2">Primary</button>
+                <button class="btn btn-success mb-2">Success</button>
+                <button class="btn btn-danger mb-2">Danger</button>
+              </div>
+              
+              <div class="d-grid gap-2 d-md-block mt-2">
+                <button class="btn btn-primary btn-lg mb-2">Large Primary</button>
+                <button class="btn btn-danger btn-sm mb-2">Small Danger</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Class Ordering Demo Card -->
+        <div class="col-lg-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-warning">
+              <h5 class="mb-0">Class Ordering Demo</h5>
+            </div>
+            <div class="card-body">
+              <p class="color-red color-blue">Order in HTML: red then blue</p>
+              <p class="color-blue color-red">Order in HTML: blue then red</p>
+              <p class="text-muted">Both are the SAME color because <code>.color-blue</code> is LAST in the CSS file.</p>
+              
+              <hr />
+              
+              <h6>Box Model Demo</h6>
+              <div class="box-demo">
+                Content area. Inspect this in DevTools (F12) to see:
+                Content → Padding → Border → Margin
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Links & Table Row -->
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-info text-white">
+              <h5 class="mb-0">Links & Inheritance</h5>
+            </div>
+            <div class="card-body">
+              <p>
+                <a href="https://developer.mozilla.org/en-US/docs/Web" class="btn btn-link">MDN Docs</a>
+              </p>
+              <p>This paragraph <a href="https://developer.mozilla.org/en-US/docs/Web">contains</a> 
+                 some <span style="color:red;">inline text</span> with different properties.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-secondary text-white">
+              <h5 class="mb-0">Bootstrap Table</h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Column 1</th>
+                      <th>Column 2</th>
+                      <th>Column 3</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>First column of text</td>
+                      <td>Second column of text</td>
+                      <td>Third column of text</td>
+                    </tr>
+                    <tr>
+                      <td>More data</td>
+                      <td>Even more data</td>
+                      <td>So much data</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================================
+         RESPONSIVE DESIGN EXAMPLES
+         ================================== -->
+    <section id="responsive">
+      <h2 class="mb-3">Bootstrap Responsive Features</h2>
+      
+      <!-- Responsive Display Utilities -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-dark text-white">
+              <h5 class="mb-0">Responsive Display Utilities</h5>
+            </div>
+            <div class="card-body">
+              <div class="alert alert-primary d-block d-sm-none">
+                📱 <strong>Extra Small (XS)</strong> - You're on a phone (&lt;576px)
+              </div>
+              <div class="alert alert-success d-none d-sm-block d-md-none">
+                📱 <strong>Small (SM)</strong> - You're on a large phone/small tablet (≥576px)
+              </div>
+              <div class="alert alert-info d-none d-md-block d-lg-none">
+                💻 <strong>Medium (MD)</strong> - You're on a tablet (≥768px)
+              </div>
+              <div class="alert alert-warning d-none d-lg-block d-xl-none">
+                🖥️ <strong>Large (LG)</strong> - You're on a laptop (≥992px)
+              </div>
+              <div class="alert alert-danger d-none d-xl-block">
+                🖥️ <strong>Extra Large (XL)</strong> - You're on a desktop (≥1200px)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Responsive Grid Examples -->
+      <div class="row mb-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+          <div class="card bg-primary text-white h-100">
+            <div class="card-body text-center">
+              <h6>Column 1</h6>
+              <p class="small mb-0">XS: 12, SM: 6, MD: 4, LG: 3</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+          <div class="card bg-success text-white h-100">
+            <div class="card-body text-center">
+              <h6>Column 2</h6>
+              <p class="small mb-0">Responsive grid</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+          <div class="card bg-warning text-dark h-100">
+            <div class="card-body text-center">
+              <h6>Column 3</h6>
+              <p class="small mb-0">Resize browser!</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-3 mb-3">
+          <div class="card bg-danger text-white h-100">
+            <div class="card-body text-center">
+              <h6>Column 4</h6>
+              <p class="small mb-0">Different on MD</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Responsive Text Alignment -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-info text-white">
+              <h5 class="mb-0">Responsive Text Alignment</h5>
+            </div>
+            <div class="card-body">
+              <p class="text-start text-md-center text-lg-end">
+                This text is: <strong>left-aligned on mobile</strong>, 
+                <strong>centered on tablets</strong>, and 
+                <strong>right-aligned on desktop</strong>. Resize to see!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Responsive Spacing -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-secondary text-white">
+              <h5 class="mb-0">Responsive Spacing & Visibility</h5>
+            </div>
+            <div class="card-body">
+              <div class="p-2 p-md-4 p-lg-5 bg-light border">
+                <p class="mb-0">This box has responsive padding: 0.5rem on mobile, 1.5rem on tablet, 3rem on desktop.</p>
+              </div>
+              
+              <div class="mt-3">
+                <button class="btn btn-primary d-block d-sm-inline-block w-100 w-sm-auto mb-2 mb-sm-0">
+                  Button 1 (Full width on mobile)
+                </button>
+                <button class="btn btn-secondary d-block d-sm-inline-block w-100 w-sm-auto">
+                  Button 2 (Full width on mobile)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================
+         DEVELOPER TOOLS TIP
+         ================================== -->
+    <section class="bg-warning bg-opacity-25 p-4 rounded border-start border-warning border-5">
+      <h3>🔍 DevTools Inspector (F12)</h3>
+      <p><strong>Right-click any element → Inspect</strong> to see:</p>
+      <ul class="mb-0">
+        <li>All applied styles and their source (external, internal, inline)</li>
+        <li>Specificity and which rules are overridden (crossed out)</li>
+        <li>Box model visualization (margin, border, padding, content)</li>
+        <li>Computed final values for all properties</li>
+        <li>Live editing to test changes!</li>
+        <li><strong>Toggle device toolbar</strong> to test responsive breakpoints!</li>
+      </ul>
+    </section>
+  </div> <!-- End Bootstrap Container -->
 
   <!-- ==================================
-       DEVELOPER TOOLS TIP
-       ================================== -->
-  <section style="background-color: #fff9c4; padding: 15px; margin-top: 20px; border-left: 4px solid #fbc02d;">
-    <h3>🔍 DevTools Inspector (F12)</h3>
-    <p><strong>Right-click any element → Inspect</strong> to see:</p>
-    <ul>
-      <li>All applied styles and their source (external, internal, inline)</li>
-      <li>Specificity and which rules are overridden (crossed out)</li>
-      <li>Box model visualization (margin, border, padding, content)</li>
-      <li>Computed final values for all properties</li>
-      <li>Live editing to test changes!</li>
-    </ul>
-  </section>
-
-  <!-- ==================================
-       JAVASCRIPT FOR FORM SUBMISSION
+       JAVASCRIPT FOR FORM SUBMISSION & VALIDATION
        ================================== -->
   <script>
     // Wait for DOM to be fully loaded
@@ -199,31 +493,63 @@
       // Get the form element
       const form = document.querySelector('#contact form');
       
-      // Add submit event listener
-      form.addEventListener('submit', function(event) {
-        // Prevent default form submission (page reload)
-        event.preventDefault();
+      if (form) {
+        // Character counter for comments field
+        const commentsField = document.getElementById('comments');
+        const charCount = document.getElementById('charCount');
         
-        // Get form values (optional - if you want to personalize the message)
-        const name = document.getElementById('name').value;
+        if (commentsField && charCount) {
+          commentsField.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+          });
+        }
         
-        // Replace form content with thank you message
-        form.innerHTML = `
-          <div style="text-align: center; padding: 40px;">
-            <h3 style="color: #28a745; font-size: 24px;">Thank You${name ? ', ' + name : ''}! 🎉</h3>
-            <p style="font-size: 18px; margin-top: 20px;">
-              Your message has been successfully submitted.
-            </p>
-            <p style="color: #666; margin-top: 10px;">
-              We'll get back to you soon!
-            </p>
-            <button type="button" class="btn btn-primary" onclick="location.reload()" style="margin-top: 20px;">
-              Submit Another Message
-            </button>
-          </div>
-        `;
-      });
+        // Bootstrap form validation
+        form.addEventListener('submit', function(event) {
+          // Prevent default form submission
+          event.preventDefault();
+          event.stopPropagation();
+          
+          // Check if form is valid using Bootstrap validation
+          if (form.checkValidity()) {
+            // Form is valid - get form values
+            const name = document.getElementById('name').value;
+            
+            // Replace form content with thank you message
+            form.innerHTML = `
+              <div class="text-center p-5">
+                <div class="mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                  </svg>
+                </div>
+                <h3 class="text-success mb-3">Thank You${name ? ', ' + name : ''}! 🎉</h3>
+                <p class="lead">Your message has been successfully submitted.</p>
+                <p class="text-muted">We'll get back to you soon!</p>
+                <button type="button" class="btn btn-primary mt-3" onclick="location.reload()">
+                  Submit Another Message
+                </button>
+              </div>
+            `;
+          } else {
+            // Form is invalid - show validation feedback
+            // Add 'was-validated' class to show Bootstrap validation styles
+            form.classList.add('was-validated');
+          }
+        }, false);
+        
+        // Reset form validation on reset button click
+        form.addEventListener('reset', function() {
+          form.classList.remove('was-validated');
+          if (charCount) {
+            charCount.textContent = '0';
+          }
+        });
+      }
     });
   </script>
+  
+  <!-- Bootstrap JS Bundle (required for navbar toggle, etc.) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
