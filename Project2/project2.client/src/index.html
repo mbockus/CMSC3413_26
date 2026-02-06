@@ -47,6 +47,7 @@
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
           <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
           <li class="nav-item"><a class="nav-link" href="#responsive">Responsive</a></li>
+          <li class="nav-item"><a class="nav-link" href="#javascript">JavaScript</a></li>
         </ul>
       </div>
     </div>
@@ -482,6 +483,171 @@
         <li><strong>Toggle device toolbar</strong> to test responsive breakpoints!</li>
       </ul>
     </section>
+
+    <!-- ==================================
+         JAVASCRIPT FUNDAMENTALS
+         ================================== -->
+    <section id="javascript">
+      <h2 class="mb-3">JavaScript Fundamentals</h2>
+
+      <!-- Variables & Data Types -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">1. Variables & Data Types</h5>
+            </div>
+            <div class="card-body">
+              <pre><code class="language-javascript">// Variables: var, let, const
+var oldWay = "Don't use var anymore"; // Function-scoped, hoisted
+let changeable = "Use let for variables that change"; // Block-scoped
+const constant = "Use const for constants"; // Block-scoped, cannot reassign
+
+// Data Types
+let stringType = "Hello World";           // String
+let numberType = 42;                      // Number
+let booleanType = true;                   // Boolean
+let arrayType = [1, 2, 3];               // Array
+let objectType = { name: "John" };       // Object
+let undefinedType;                        // Undefined
+let nullType = null;                      // Null</code></pre>
+              <button class="btn btn-success btn-sm" onclick="showVariablesDemo()">Run Demo</button>
+              <div id="variablesOutput" class="mt-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Functions -->
+      <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">2. Functions</h5>
+            </div>
+            <div class="card-body">
+              <pre><code class="language-javascript">// Function Declaration
+function greet(name) {
+  return "Hello, " + name;
+}
+
+// Arrow Function (ES6)
+const greetArrow = (name) => {
+  return `Hello, ${name}`;
+};
+
+// Shorthand Arrow Function
+const greetShort = name => `Hello, ${name}`;
+
+// Function with default parameters
+const greetDefault = (name = "Guest") => {
+  return `Hello, ${name}`;
+};</code></pre>
+              <button class="btn btn-success btn-sm" onclick="showFunctionsDemo()">Run Demo</button>
+              <div id="functionsOutput" class="mt-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-info text-white">
+              <h5 class="mb-0">3. Arrays & Objects</h5>
+            </div>
+            <div class="card-body">
+              <pre><code class="language-javascript">// Arrays
+const fruits = ['apple', 'banana', 'orange'];
+fruits.push('grape');        // Add to end
+fruits.pop();               // Remove from end
+fruits.forEach(f => console.log(f));
+
+// Array Methods
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map(n => n * 2);
+const evens = numbers.filter(n => n % 2 === 0);
+const sum = numbers.reduce((a, b) => a + b);
+
+// Objects
+const person = {
+  name: "John",
+  age: 30,
+  greet() {
+    return `I'm ${this.name}`;
+  }
+};</code></pre>
+              <button class="btn btn-info btn-sm" onclick="showArraysDemo()">Run Demo</button>
+              <div id="arraysOutput" class="mt-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TypeScript Relationship -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+              <h5 class="mb-0">📘 How TypeScript Relates to JavaScript</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h6 class="text-danger">❌ JavaScript (No Type Safety)</h6>
+                  <pre><code class="language-javascript">// No type checking - errors at runtime!
+function add(a, b) {
+  return a + b;
+}
+
+add(5, 10);        // ✅ 15
+add("5", "10");    // ⚠️ "510" (string concat!)
+add(5, "10");      // ⚠️ "510" (unexpected!)
+
+let user = { name: "John" };
+user.age = 30;     // ✅ Works
+user.email();      // 💥 Runtime error!</code></pre>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="text-success">✅ TypeScript (Type Safety)</h6>
+                  <pre><code class="language-typescript">// Type checking - errors at compile time!
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+add(5, 10);        // ✅ 15
+add("5", "10");    // ❌ Compile error!
+add(5, "10");      // ❌ Compile error!
+
+interface User {
+  name: string;
+  age?: number;    // Optional property
+}
+let user: User = { name: "John" };
+user.age = 30;     // ✅ Works
+user.email();      // ❌ Compile error!</code></pre>
+                </div>
+              </div>
+
+              <hr />
+
+              <h6 class="mt-3">🔑 Key Differences:</h6>
+              <ul>
+                <li><strong>TypeScript is a superset of JavaScript</strong> - All valid JS is valid TS</li>
+                <li><strong>TypeScript adds static typing</strong> - Catch errors before runtime</li>
+                <li><strong>TypeScript compiles to JavaScript</strong> - Browsers only run JS</li>
+                <li><strong>TypeScript adds modern features</strong> - Interfaces, generics, decorators, etc.</li>
+                <li><strong>Better IDE support</strong> - Autocomplete, refactoring, intellisense</li>
+              </ul>
+
+              <div class="alert alert-info mt-3 mb-0">
+                <strong>💡 In this Angular project:</strong> Your <code>.ts</code> files are TypeScript, which get compiled 
+                to JavaScript that runs in the browser. Open any <code>.ts</code> file in your project to see TypeScript in action!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-root></app-root>
+    </section>
   </div> <!-- End Bootstrap Container -->
 
   <!-- ==================================
@@ -547,6 +713,91 @@
         });
       }
     });
+
+    // ====================================
+    // JAVASCRIPT FUNDAMENTALS DEMOS
+    // ====================================
+
+    // Variables & Data Types Demo
+    function showVariablesDemo() {
+      const output = document.getElementById('variablesOutput');
+      
+      // Demonstrate different data types
+      let stringType = "Hello World";
+      let numberType = 42;
+      let booleanType = true;
+      let arrayType = [1, 2, 3];
+      let objectType = { name: "John", age: 30 };
+      
+      output.innerHTML = `
+        <div class="alert alert-success">
+          <strong>Variable Demo Output:</strong><br>
+          String: "${stringType}" (type: ${typeof stringType})<br>
+          Number: ${numberType} (type: ${typeof numberType})<br>
+          Boolean: ${booleanType} (type: ${typeof booleanType})<br>
+          Array: [${arrayType}] (type: ${typeof arrayType})<br>
+          Object: ${JSON.stringify(objectType)} (type: ${typeof objectType})
+        </div>
+      `;
+    }
+
+    // Functions Demo
+    function showFunctionsDemo() {
+      const output = document.getElementById('functionsOutput');
+      
+      // Traditional function
+      function greetTraditional(name) {
+        return "Hello, " + name;
+      }
+      
+      // Arrow function
+      const greetArrow = (name) => `Hello, ${name}`;
+      
+      // Arrow function with default parameter
+      const greetDefault = (name = "Guest") => `Hello, ${name}`;
+      
+      output.innerHTML = `
+        <div class="alert alert-success">
+          <strong>Function Demo Output:</strong><br>
+          Traditional: ${greetTraditional("Alice")}<br>
+          Arrow: ${greetArrow("Bob")}<br>
+          Default param: ${greetDefault()}<br>
+          Default param with arg: ${greetDefault("Charlie")}
+        </div>
+      `;
+    }
+
+    // Arrays & Objects Demo
+    function showArraysDemo() {
+      const output = document.getElementById('arraysOutput');
+      
+      // Array methods
+      const numbers = [1, 2, 3, 4, 5];
+      const doubled = numbers.map(n => n * 2);
+      const evens = numbers.filter(n => n % 2 === 0);
+      const sum = numbers.reduce((a, b) => a + b, 0);
+      
+      // Object
+      const person = {
+        name: "John",
+        age: 30,
+        greet() {
+          return `I'm ${this.name}, age ${this.age}`;
+        }
+      };
+      
+      output.innerHTML = `
+        <div class="alert alert-success">
+          <strong>Arrays & Objects Demo:</strong><br>
+          Original: [${numbers}]<br>
+          Doubled (map): [${doubled}]<br>
+          Evens (filter): [${evens}]<br>
+          Sum (reduce): ${sum}<br>
+          <hr>
+          Person: ${person.greet()}
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
