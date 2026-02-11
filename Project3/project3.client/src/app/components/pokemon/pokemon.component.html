@@ -1,0 +1,6 @@
+<h1>{{ name }}</h1>
+<p>Type: {{ type }}</p>
+<p>Level: {{ level }}</p>
+<p>Health: {{ health }}</p>
+<button (click)="hurtPokemon()">Take Damage</button>
+<input type="number" [(ngModel)]="damageAmount">
