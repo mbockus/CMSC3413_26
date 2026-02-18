@@ -19,27 +19,27 @@ variable "subscription_id" {
   type = string
 }
 
-resource "azurerm_resource_group" "project2" {
-  name     = "project2-resources"
+resource "azurerm_resource_group" "project3" {
+  name     = "project3-resources"
   location = "East US"
 }
 
 # Replaces azurerm_app_service_plan
-resource "azurerm_service_plan" "project2example" {
-  name                = "project2-appserviceplan"
-  location            = azurerm_resource_group.project2.location
-  resource_group_name = azurerm_resource_group.project2.name
+resource "azurerm_service_plan" "project3example" {
+  name                = "project3-appserviceplan"
+  location            = azurerm_resource_group.project3.location
+  resource_group_name = azurerm_resource_group.project3.name
 
   os_type  = "Windows"
   sku_name = "F1"
 }
 
 # Replaces azurerm_app_service
-resource "azurerm_windows_web_app" "project2example" {
-  name                = "project2-example-app-service" # CHANGEME - must be globally unique
-  location            = azurerm_resource_group.project2.location
-  resource_group_name = azurerm_resource_group.project2.name
-  service_plan_id     = azurerm_service_plan.project2example.id
+resource "azurerm_windows_web_app" "project3example" {
+  name                = "project3-example-app-service" # CHANGEME - must be globally unique
+  location            = azurerm_resource_group.project3.location
+  resource_group_name = azurerm_resource_group.project3.name
+  service_plan_id     = azurerm_service_plan.project3example.id
 
   site_config {
     # Free tier doesn't support Always On
