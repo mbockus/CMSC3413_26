@@ -1,6 +1,8 @@
-<h1>{{ name }}</h1>
-<p>Type: {{ type }}</p>
-<p>Level: {{ level }}</p>
-<p>Health: {{ health }}</p>
-<button (click)="hurtPokemon()">Take Damage</button>
-<input type="number" [(ngModel)]="damageAmount">
+<div *ngIf="pokemon">
+    <h2>{{ pokemon.name}}</h2>
+    <p>Type: {{ pokemon.types[0].type.name}}</p>
+    <img [src]="pokemon.sprites.front_default" alt="{{ pokemon.name }}" />
+</div>
+<div *ngIf="!pokemon">
+  Loading...
+</div>  
