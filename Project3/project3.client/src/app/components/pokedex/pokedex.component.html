@@ -1,0 +1,7 @@
+<div *ngIf="!isLoading">
+    <div *ngFor="let pokemon of pokemonList" class="card mb-3">
+        {{ pokemon.name }}
+        <button class="btn btn-primary" [routerLink]="['/pokemon', pokemon.name]">View Details</button>
+    </div>
+    </div>
+
