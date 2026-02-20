@@ -12,11 +12,12 @@ export class PokemonService {
 
   constructor(private http: HttpClient) { }
 
-  getPokemonByNameOrId(nameOrId: string | number): Observable<Pokemon> {
-    return this.http.get<Pokemon>(`${this.apiUrl}/pokemon/${nameOrId}`);
-  }
-
   getPokemonList(offset: number = 0, limit: number = 20): Observable<PokemonListResponse> {
     return this.http.get<PokemonListResponse>(`${this.apiUrl}/pokemon?offset=${offset}&limit=${limit}`);
   }
+
+  getPokemon(nameOrId: string | number): Observable<Pokemon> {
+    return this.http.get<Pokemon>(`${this.apiUrl}/pokemon/${nameOrId}`);
+  }
+
 }

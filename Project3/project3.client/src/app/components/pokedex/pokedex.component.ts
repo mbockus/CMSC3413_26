@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Pokemon } from '../../models/pokemon.model';
+import { forkJoin } from 'rxjs';
+import { Pokemon, PokemonListItem } from '../../models/pokemon.model';
 import { PokemonService } from '../../services/pokemon.service';
 
 @Component({
@@ -8,7 +9,6 @@ import { PokemonService } from '../../services/pokemon.service';
   styleUrl: './pokedex.component.css'
 })
 export class PokedexComponent implements OnInit {
-
   pokemonList: Pokemon[] = [];
   currentPage: number = 1;
   pageSize: number = 6;
@@ -22,15 +22,32 @@ export class PokedexComponent implements OnInit {
   }
 
   loadPokemonList(): void {
-    this.pokemonService.getPokemonList().subscribe(pokemonList => {
-      this.totalCount = pokemonList.count;
+    this.isLoading = true;
+    const offset = (this.currentPage - 1) * this.pageSize;
+    this.pokemonService.getPokemonList(offset, this.pageSize).subscribe(response => {
+      this.totalCount = response.count;
       this.pokemonList = [];
-      pokemonList.results.forEach(pokemon => {
-        this.pokemonService.getPokemonByNameOrId(pokemon.name).subscribe(fullPokemon => {
-          this.pokemonList.push(fullPokemon);
+      
+      // Load full pokemon data for all items in parallel
+      const pokemonRequests = response.results.map(item => 
+        this.pokemonService.getPokemon(item.name)
+      );
+      
+      if (pokemonRequests.length > 0) {
+        forkJoin(pokemonRequests).subscribe(pokemonData => {
+          this.pokemonList = pokemonData;
+          this.isLoading = false;
         });
-      });
+      } else {
+        this.isLoading = false;
+      }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadPokemonList();
+    window.scrollTo(0, 0);
   }
 }
 
