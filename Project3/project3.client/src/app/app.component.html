@@ -1,2 +1,31 @@
-<router-outlet></router-outlet>
+<div class="min-vh-100">
+  <header class="bg-white shadow-sm mb-4">
+    <div class="container py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-0">{{ title }}</h1>
+        </div>
+        
+        <div *ngIf="authState.isAuthenticated && authState.user" class="d-flex align-items-center gap-3">
+          <img 
+            [src]="authState.user.avatar_url" 
+            [alt]="authState.user.login"
+            class="rounded-circle"
+            width="32"
+            height="32"
+          />
+          <span class="text-dark">{{ authState.user.name || authState.user.login }}</span>
+          <button (click)="logout()" class="btn btn-outline-secondary btn-sm">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <main class="container pb-5">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
 
