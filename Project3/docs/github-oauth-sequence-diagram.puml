@@ -1,0 +1,93 @@
+@startuml GitHub OAuth Authentication Flow
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam roundcorner 10
+skinparam sequenceMessageAlign center
+
+title GitHub OAuth 2.0 Authentication Flow - Project3
+
+actor User as user
+participant "Angular App\n(Browser)" as browser #LightBlue
+participant "ASP.NET API\n(Your Server)" as backend #LightGreen
+participant "GitHub OAuth\n(github.com)" as github #Orange
+participant "GitHub API\n(api.github.com)" as githubapi #Orange
+
+== Phase 1: Initiate Login ==
+user -> browser: Click "Login" button
+activate browser
+browser -> browser: loginComponent.login()
+note right
+  Construct OAuth URL with:
+  - client_id from environment.ts
+  - redirect_uri = {origin}/login
+end note
+browser -> github: **Redirect** to /login/oauth/authorize\n?client_id={clientId}\n&redirect_uri={yourApp}/login
+deactivate browser
+
+== Phase 2: GitHub Authorization ==
+activate github
+github -> user: Display authorization page\n"Authorize Project3?"
+user -> github: Click "Authorize application"
+github -> github: Generate authorization code
+github -> browser: **302 Redirect** to {yourApp}/login\n?code={authorizationCode}
+deactivate github
+
+== Phase 3: Exchange Authorization Code for Access Token ==
+activate browser
+browser -> browser: ngOnInit() detects\n'code' query parameter
+note right
+  LoginComponent extracts
+  code from URL params
+end note
+browser -> backend: **POST** /api/login\n{\n  "code": "{authCode}"\n}
+deactivate browser
+
+activate backend
+backend -> backend: Add client_id & client_secret\nfrom appsettings.json
+note right
+  Server adds sensitive credentials:
+  - client_id
+  - client_secret
+  (Never exposed to browser)
+end note
+backend -> github: **POST** /login/oauth/access_token\n{\n  "code": "{authCode}",\n  "client_id": "{id}",\n  "client_secret": "{secret}"\n}
+activate github
+github -> github: Validate credentials\nand authorization code
+github -> backend: **200 OK**\n{\n  "access_token": "{token}",\n  "token_type": "bearer",\n  "scope": "read:user"\n}
+deactivate github
+backend -> browser: **200 OK**\n{\n  "access_token": "{token}"\n}
+deactivate backend
+
+== Phase 4: Store Token and Fetch User Profile ==
+activate browser
+browser -> browser: AuthService.setToken()\nStore in sessionStorage
+note right
+  Token stored as:
+  sessionStorage['github_token']
+end note
+browser -> backend: **GET** /api/login/user\nAuthorization: Bearer {token}
+deactivate browser
+
+activate backend
+backend -> githubapi: **GET** /user\nAuthorization: Bearer {token}\nUser-Agent: Project3/1.0
+activate githubapi
+githubapi -> githubapi: Validate access token
+githubapi -> backend: **200 OK**\n{\n  "login": "username",\n  "id": 12345,\n  "avatar_url": "...",\n  "name": "Full Name",\n  "email": "user@example.com"\n}
+deactivate githubapi
+backend -> browser: **200 OK**\n{ user data }
+deactivate backend
+
+activate browser
+browser -> browser: Update authState$\n{\n  isAuthenticated: true,\n  user: { ... },\n  token: "{token}"\n}
+browser -> browser: router.navigateByUrl()\nto requested page
+browser -> user: Show logged-in UI\nDisplay user avatar & name
+deactivate browser
+
+note over user, githubapi
+  **User is now authenticated!**
+  - Token stored in sessionStorage
+  - User profile cached in AuthService
+  - Protected routes now accessible
+end note
+
+@enduml
