@@ -10,21 +10,21 @@
   </div>
 
   <div *ngIf="!isLoading && pokemon" class="bg-white p-5 rounded shadow">
-    <div class="row">
+    <div class="row" [appPokemonTypeColor]="pokemon.types[0].type.name">
       <div class="col-md-4">
         <div class="card border-0 bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-          <img [src]="pokemon.sprites.front_default" 
-               [alt]="pokemon.name" 
-               style="max-width: 100%; max-height: 100%; object-fit: contain;">
+          <img [src]="pokemon.sprites.front_default" [alt]="pokemon.name"
+            style="max-width: 100%; max-height: 100%; object-fit: contain;">
         </div>
       </div>
       <div class="col-md-8">
         <h2 class="text-capitalize mb-4">{{ pokemon.name }}</h2>
-        
+
         <div class="mb-5">
           <h4 class="text-primary border-bottom pb-2 mb-3">Types</h4>
           <div>
-            <span *ngFor="let type of pokemon.types" class="badge bg-primary me-2 mb-2">
+            <span *ngFor="let type of pokemon.types" class="badge bg-primary me-2 mb-2"
+              [appPokemonTypeColor]="type.type.name">
               {{ type.type.name }}
             </span>
           </div>
@@ -54,12 +54,13 @@
             </div>
             <div class="col">
               <div class="progress" style="height: 25px;">
-                <div class="progress-bar" 
-                     [style.width.%]="(stat.base_stat / 150) * 100"
-                     role="progressbar">
+                <div class="progress-bar" [style.width.%]="(stat.base_stat / 150) * 100" role="progressbar">
                   {{ stat.base_stat }}
                 </div>
               </div>
+            </div>
+            <div class="col-auto">
+              {{ stat.base_stat | pokemonStatRating}}
             </div>
           </div>
         </div>
@@ -70,4 +71,4 @@
   <div *ngIf="!isLoading && !pokemon" class="alert alert-danger mt-4">
     Pokémon not found.
   </div>
-</div>  
+</div>

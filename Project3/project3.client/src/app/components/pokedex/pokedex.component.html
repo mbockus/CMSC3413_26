@@ -10,7 +10,8 @@
     <div *ngIf="!isLoading">
         <!-- Grid of Pokemon -->
         <div class="row g-4 mb-4">
-            <div *ngFor="let pokemon of pokemonList" class="col-lg-3 col-md-4 col-sm-6">
+            <div *ngFor="let pokemon of pokemonList" class="col-lg-3 col-md-4 col-sm-6"
+                [appPokemonTypeColor]="pokemon.types[0].type.name">
                 <div class="card h-100 shadow-sm">
                     <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                         <img [src]="pokemon.sprites.front_default" [alt]="pokemon.name"

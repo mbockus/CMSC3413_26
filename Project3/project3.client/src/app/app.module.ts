@@ -9,13 +9,17 @@ import { PokemonComponent } from './components/pokemon/pokemon.component';
 import { PokedexComponent } from './components/pokedex/pokedex.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { PokemonStatRatingPipe } from './pipes/pokemon-stat-rating.pipe';
+import { PokemonTypeColorDirective } from './directives/pokemon-type-color.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     PokemonComponent,
     PokedexComponent,
-    LoginComponent
+    LoginComponent,
+    PokemonStatRatingPipe,
+    PokemonTypeColorDirective
   ],
   imports: [
     BrowserModule,
