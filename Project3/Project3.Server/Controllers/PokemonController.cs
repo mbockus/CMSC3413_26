@@ -15,6 +15,7 @@ namespace Project3.Server.Controllers
             new Pokemon { Id = 2, Name = "Charmander", Type = "Fire", Level = 5, HP = 39 },
             new Pokemon { Id = 3, Name = "Squirtle", Type = "Water", Level = 5, HP = 44 }
         };
+        private static int _nextId = 4;
 
         // GET: api/<PokemonController>
         [HttpGet]
@@ -37,21 +38,42 @@ namespace Project3.Server.Controllers
 
         // POST api/<PokemonController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<Pokemon> Post([FromBody] Pokemon pokemon)
         {
-            value = "Testing";
+            pokemon.Id = _nextId++;
+            _pokemon.Add(pokemon);
+            return Ok(pokemon);
         }
 
         // PUT api/<PokemonController>/5
         [HttpPut("{id:int}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] Pokemon pokemon)
         {
+            var existingPokemon = _pokemon.FirstOrDefault(p => p.Id == id);
+            if(existingPokemon == null)
+            {
+                return NotFound();
+            }
+
+            existingPokemon.Name = pokemon.Name;
+            existingPokemon.Type = pokemon.Type;
+            existingPokemon.Level = pokemon.Level;
+
+            return Ok(existingPokemon);
         }
 
         // DELETE api/<PokemonController>/5
         [HttpDelete("{id:int}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var pokemon = _pokemon.FirstOrDefault(p => p.Id == id);
+            if(pokemon == null)
+            {
+                return NotFound();
+            }
+
+            _pokemon.Remove(pokemon);
+            return Ok();
         }
     }
 }
