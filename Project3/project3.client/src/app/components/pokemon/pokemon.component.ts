@@ -11,7 +11,7 @@ import { PokemonService } from '../../services/pokemon.service';
 export class PokemonComponent implements OnInit {
 
   pokemon: Pokemon | null = null;
-  pokemonName: string = 'pikachu';
+  pokemonId: number = 1;
   isLoading: boolean = true;
 
   constructor(
@@ -22,8 +22,8 @@ export class PokemonComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      if (params['name']) {
-        this.pokemonName = params['name'];
+      if (params['id']) {
+        this.pokemonId = params['id'];
         this.loadPokemon();
       }
     });
@@ -31,7 +31,7 @@ export class PokemonComponent implements OnInit {
 
   loadPokemon(): void {
     this.isLoading = true;
-    this.pokemonService.getPokemon(this.pokemonName).subscribe(
+    this.pokemonService.getPokemon(this.pokemonId).subscribe(
       pokemon => {
         this.pokemon = pokemon;
         this.isLoading = false;
@@ -45,5 +45,16 @@ export class PokemonComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/']);
+  }
+
+  deletePokemon(): void {
+    this.pokemonService.deletePokemon(this.pokemonId).subscribe(
+      () => {
+        this.router.navigate(['/']);
+      },
+      error => {
+        console.error('Error deleting pokemon:', error);
+      }
+    );
   }
 }

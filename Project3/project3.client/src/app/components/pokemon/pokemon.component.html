@@ -3,6 +3,8 @@
     ← Back to Pokédex
   </button>
 
+
+
   <div *ngIf="isLoading" class="text-center">
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -10,60 +12,31 @@
   </div>
 
   <div *ngIf="!isLoading && pokemon" class="bg-white p-5 rounded shadow">
-    <div class="row" [appPokemonTypeColor]="pokemon.types[0].type.name">
+    <div class="row" [appPokemonTypeColor]="pokemon.type">
       <div class="col-md-4">
-        <div class="card border-0 bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-          <img [src]="pokemon.sprites.front_default" [alt]="pokemon.name"
-            style="max-width: 100%; max-height: 100%; object-fit: contain;">
-        </div>
+
       </div>
       <div class="col-md-8">
         <h2 class="text-capitalize mb-4">{{ pokemon.name }}</h2>
-
+        <button class="btn btn-primary mb-3 ms-2" (click)="deletePokemon()">
+          Delete
+        </button>
         <div class="mb-5">
           <h4 class="text-primary border-bottom pb-2 mb-3">Types</h4>
           <div>
-            <span *ngFor="let type of pokemon.types" class="badge bg-primary me-2 mb-2"
-              [appPokemonTypeColor]="type.type.name">
-              {{ type.type.name }}
+            <span class="badge bg-primary me-2 mb-2" [appPokemonTypeColor]="pokemon.type">
+              {{ pokemon.type }}
             </span>
           </div>
         </div>
 
         <div class="mb-5">
           <h4 class="text-primary border-bottom pb-2 mb-3">Physical Attributes</h4>
-          <p><strong>Height:</strong> {{ (pokemon.height / 10).toFixed(1) }}m</p>
-          <p><strong>Weight:</strong> {{ (pokemon.weight / 10).toFixed(1) }}kg</p>
+          <p><strong>HP:</strong> {{ pokemon.hp }}</p>
+          <p><strong>Level:</strong> {{ pokemon.level }}</p>
         </div>
 
-        <div class="mb-5">
-          <h4 class="text-primary border-bottom pb-2 mb-3">Abilities</h4>
-          <ul class="list-unstyled" *ngIf="pokemon.abilities && pokemon.abilities.length > 0">
-            <li *ngFor="let ability of pokemon.abilities" class="text-capitalize mb-2">
-              {{ ability.ability.name }}
-              <span *ngIf="ability.is_hidden" class="badge bg-warning">Hidden</span>
-            </li>
-          </ul>
-        </div>
 
-        <div class="mb-5">
-          <h4 class="text-primary border-bottom pb-2 mb-3">Stats</h4>
-          <div *ngFor="let stat of pokemon.stats" class="row align-items-center mb-3">
-            <div class="col-auto fw-bold" style="width: 120px;">
-              {{ stat.stat.name | titlecase }}
-            </div>
-            <div class="col">
-              <div class="progress" style="height: 25px;">
-                <div class="progress-bar" [style.width.%]="(stat.base_stat / 150) * 100" role="progressbar">
-                  {{ stat.base_stat }}
-                </div>
-              </div>
-            </div>
-            <div class="col-auto">
-              {{ stat.base_stat | pokemonStatRating}}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
