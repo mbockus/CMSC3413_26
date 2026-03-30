@@ -5,7 +5,7 @@
         <div>
           <h1 class="h3 fw-bold text-dark mb-0">{{ title }}</h1>
         </div>
-        
+
         <div *ngIf="authState.isAuthenticated && authState.user" class="d-flex align-items-center gap-3">
           <img 
             [src]="authState.user.avatar_url" 
@@ -22,10 +22,12 @@
       </div>
     </div>
   </header>
-  
+
   <main class="container pb-5">
     <router-outlet></router-outlet>
   </main>
+
+  <app-toasts aria-live="polite" aria-atomic="true"></app-toasts>
 </div>
 
 

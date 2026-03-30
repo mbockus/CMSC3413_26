@@ -7,7 +7,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PokemonComponent } from './components/pokemon/pokemon.component';
 import { PokedexComponent } from './components/pokedex/pokedex.component';
+import { PokemonCreateComponent } from './components/pokemon-create/pokemon-create.component';
 import { LoginComponent } from './components/login/login.component';
+import { ToastsComponent } from './components/toasts/toasts.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { PokemonStatRatingPipe } from './pipes/pokemon-stat-rating.pipe';
 import { PokemonTypeColorDirective } from './directives/pokemon-type-color.directive';
@@ -17,7 +20,10 @@ import { PokemonTypeColorDirective } from './directives/pokemon-type-color.direc
     AppComponent,
     PokemonComponent,
     PokedexComponent,
+    PokemonCreateComponent,
     LoginComponent,
+    ToastsComponent,
+    ConfirmDialogComponent,
     PokemonStatRatingPipe,
     PokemonTypeColorDirective
   ],

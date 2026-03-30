@@ -1,0 +1,86 @@
+<div class="container-fluid py-5 bg-light">
+  <button class="btn btn-secondary mb-3" (click)="goBack()">
+    ← Back to Pokédex
+  </button>
+
+  <div class="bg-white p-5 rounded shadow">
+    <h2 class="mb-4">Create New Pokemon</h2>
+
+    <form [formGroup]="createForm" (ngSubmit)="createPokemon()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name *</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="name" 
+          formControlName="name"
+          [class.is-invalid]="createForm.get('name')?.invalid && createForm.get('name')?.touched">
+        <div *ngIf="createForm.get('name')?.invalid && createForm.get('name')?.touched" class="invalid-feedback">
+          <div *ngIf="createForm.get('name')?.errors?.['required']">Name is required</div>
+          <div *ngIf="createForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="type" class="form-label">Type *</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="type" 
+          formControlName="type"
+          placeholder="e.g., Fire, Water, Grass/Poison"
+          [class.is-invalid]="createForm.get('type')?.invalid && createForm.get('type')?.touched">
+        <div *ngIf="createForm.get('type')?.invalid && createForm.get('type')?.touched" class="invalid-feedback">
+          <div *ngIf="createForm.get('type')?.errors?.['required']">Type is required</div>
+          <div *ngIf="createForm.get('type')?.errors?.['minlength']">Type must be at least 2 characters</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="level" class="form-label">Level *</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          id="level" 
+          formControlName="level"
+          [class.is-invalid]="createForm.get('level')?.invalid && createForm.get('level')?.touched">
+        <div *ngIf="createForm.get('level')?.invalid && createForm.get('level')?.touched" class="invalid-feedback">
+          <div *ngIf="createForm.get('level')?.errors?.['required']">Level is required</div>
+          <div *ngIf="createForm.get('level')?.errors?.['min'] || createForm.get('level')?.errors?.['max']">Level must be between 1 and 100</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="hp" class="form-label">HP *</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          id="hp" 
+          formControlName="hp"
+          [class.is-invalid]="createForm.get('hp')?.invalid && createForm.get('hp')?.touched">
+        <div *ngIf="createForm.get('hp')?.invalid && createForm.get('hp')?.touched" class="invalid-feedback">
+          <div *ngIf="createForm.get('hp')?.errors?.['required']">HP is required</div>
+          <div *ngIf="createForm.get('hp')?.errors?.['min']">HP must be at least 1</div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button 
+          type="submit" 
+          class="btn btn-success" 
+          [disabled]="createForm.invalid || isSubmitting">
+          <span *ngIf="!isSubmitting">
+            <i class="bi bi-plus-circle"></i> Create Pokemon
+          </span>
+          <span *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Creating...
+          </span>
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="goBack()" [disabled]="isSubmitting">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
