@@ -1,8 +1,15 @@
+// PokemonType model to match the C# PokemonType model
+export interface PokemonTypeModel {
+  id: number;
+  name: string;
+  pokemonId: number;
+}
+
 // Model to match the C# Pokemon model from the API
 export interface Pokemon {
   id: number;
   name: string;
-  type: string;
+  types: PokemonTypeModel[];
   level: number;
   hp: number;
 }
@@ -10,7 +17,7 @@ export interface Pokemon {
 // DTO for creating a new Pokemon (id will be auto-assigned by server)
 export interface CreatePokemonDto {
   name: string;
-  type: string;
+  types: PokemonTypeModel[];
   level: number;
   hp: number;
 }
@@ -18,7 +25,7 @@ export interface CreatePokemonDto {
 // DTO for updating a Pokemon
 export interface UpdatePokemonDto {
   name: string;
-  type: string;
+  types: PokemonTypeModel[];
   level: number;
   hp: number;
 }

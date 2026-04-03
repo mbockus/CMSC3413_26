@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Pokemon, UpdatePokemonDto } from '../../models/pokemon.model';
+import { Pokemon, UpdatePokemonDto, PokemonTypeModel } from '../../models/pokemon.model';
 import { PokemonService } from '../../services/pokemon.service';
 import { ToastService } from '../../services/toast.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
@@ -18,10 +18,11 @@ export class PokemonComponent implements OnInit {
   isEditing: boolean = false;
   editForm: UpdatePokemonDto = {
     name: '',
-    type: '',
+    types: [],
     level: 1,
     hp: 1
   };
+  currentType: string = '';
 
   constructor(
     private pokemonService: PokemonService,
@@ -61,27 +62,49 @@ export class PokemonComponent implements OnInit {
     if (this.pokemon) {
       this.editForm = {
         name: this.pokemon.name,
-        type: this.pokemon.type,
+        types: [...this.pokemon.types],
         level: this.pokemon.level,
         hp: this.pokemon.hp
       };
     }
   }
 
+  addType(): void {
+    if (this.currentType.trim() && !this.editForm.types.some(t => t.name === this.currentType.trim())) {
+      this.editForm.types.push({
+        id: 0,
+        name: this.currentType.trim(),
+        pokemonId: this.pokemon?.id || 0
+      });
+      this.currentType = '';
+    }
+  }
+
+  removeType(index: number): void {
+    this.editForm.types.splice(index, 1);
+  }
+
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     if (!this.isEditing) {
       this.resetEditForm();
+      this.currentType = '';
     }
   }
 
   savePokemon(): void {
-    if (!this.pokemon) return;
+    if (!this.pokemon || this.editForm.types.length === 0) {
+      if (this.editForm.types.length === 0) {
+        this.toastService.error('Please add at least one type.');
+      }
+      return;
+    }
 
     this.pokemonService.updatePokemon(this.pokemon.id, this.editForm).subscribe({
       next: () => {
         this.loadPokemon(this.pokemon!.id);
         this.isEditing = false;
+        this.currentType = '';
         this.toastService.success('Pokemon updated successfully!');
       },
       error: (error) => {

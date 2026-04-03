@@ -22,18 +22,31 @@
       </div>
 
       <div class="mb-3">
-        <label for="type" class="form-label">Type *</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          id="type" 
-          formControlName="type"
-          placeholder="e.g., Fire, Water, Grass/Poison"
-          [class.is-invalid]="createForm.get('type')?.invalid && createForm.get('type')?.touched">
-        <div *ngIf="createForm.get('type')?.invalid && createForm.get('type')?.touched" class="invalid-feedback">
-          <div *ngIf="createForm.get('type')?.errors?.['required']">Type is required</div>
-          <div *ngIf="createForm.get('type')?.errors?.['minlength']">Type must be at least 2 characters</div>
+        <label for="type" class="form-label">Types *</label>
+        <div class="input-group">
+          <input 
+            type="text" 
+            class="form-control" 
+            id="type" 
+            [(ngModel)]="currentType"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="e.g., Fire, Water, Grass"
+            (keyup.enter)="addType()">
+          <button 
+            type="button" 
+            class="btn btn-primary" 
+            (click)="addType()"
+            [disabled]="!currentType.trim()">
+            <i class="bi bi-plus"></i> Add
+          </button>
         </div>
+        <div *ngIf="types.length > 0" class="mt-2">
+          <span *ngFor="let type of types; let i = index" class="badge bg-primary me-2 mb-2" style="font-size: 0.9rem;">
+            {{ type }}
+            <i class="bi bi-x-circle ms-1" style="cursor: pointer;" (click)="removeType(i)"></i>
+          </span>
+        </div>
+        <small class="form-text text-muted">Add at least one type for your Pokemon</small>
       </div>
 
       <div class="mb-3">
@@ -68,7 +81,7 @@
         <button 
           type="submit" 
           class="btn btn-success" 
-          [disabled]="createForm.invalid || isSubmitting">
+          [disabled]="createForm.invalid || types.length === 0 || isSubmitting">
           <span *ngIf="!isSubmitting">
             <i class="bi bi-plus-circle"></i> Create Pokemon
           </span>

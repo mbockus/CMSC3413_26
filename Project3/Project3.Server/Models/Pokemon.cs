@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
+        public List<PokemonType> Types { get; set; } = new List<PokemonType>();
         public int Level { get; set; }
         public int HP { get; set; }
 

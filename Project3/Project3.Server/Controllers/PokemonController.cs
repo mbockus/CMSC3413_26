@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project3.Server.Models;
+using Project3.Server.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,26 +10,25 @@ namespace Project3.Server.Controllers
     [ApiController]
     public class PokemonController : ControllerBase
     {
-        private static readonly List<Pokemon> _pokemon = new() 
-        {
-            new Pokemon { Id = 1, Name = "Bulbasaur", Type = "Grass/Poison", Level = 5, HP = 45 },
-            new Pokemon { Id = 2, Name = "Charmander", Type = "Fire", Level = 5, HP = 39 },
-            new Pokemon { Id = 3, Name = "Squirtle", Type = "Water", Level = 5, HP = 44 }
-        };
-        private static int _nextId = 4;
+        private readonly IPokemonService _pokemonService;
 
+        public PokemonController(IPokemonService pokemonService)
+        {
+            this._pokemonService = pokemonService;
+        }
         // GET: api/<PokemonController>
         [HttpGet]
-        public ActionResult<IEnumerable<Pokemon>> Get()
+        public async Task<ActionResult<IEnumerable<Pokemon>>> Get()
         {
-            return Ok(_pokemon);
+            var pokemon = await this._pokemonService.GetAllPokemonAsync();
+            return Ok(pokemon);
         }
 
         // GET api/<PokemonController>/5
         [HttpGet("{id:int}")]
-        public ActionResult<Pokemon> Get(int id)
+        public async Task<ActionResult<Pokemon>> Get(int id)
         {
-            var pokemon = _pokemon.FirstOrDefault(p => p.Id == id);
+            var pokemon = await this._pokemonService.GetPokemonByIdAsync(id);
             if (pokemon == null)
             {
                 return NotFound();
@@ -38,42 +38,38 @@ namespace Project3.Server.Controllers
 
         // POST api/<PokemonController>
         [HttpPost]
-        public ActionResult<Pokemon> Post([FromBody] Pokemon pokemon)
+        public async Task<ActionResult<Pokemon>> Post([FromBody] Pokemon pokemon)
         {
-            pokemon.Id = _nextId++;
-            _pokemon.Add(pokemon);
-            return Ok(pokemon);
+            var createdPokemon = await this._pokemonService.CreatePokemonAsync(pokemon);
+            return Ok(createdPokemon);
         }
 
         // PUT api/<PokemonController>/5
         [HttpPut("{id:int}")]
-        public IActionResult Put(int id, [FromBody] Pokemon pokemon)
+        public async Task<IActionResult> Put(int id, [FromBody] Pokemon pokemon)
         {
-            var existingPokemon = _pokemon.FirstOrDefault(p => p.Id == id);
-            if(existingPokemon == null)
+            pokemon.Id = id;
+            var updatedPokemon = await this._pokemonService.UpdatePokemonAsync(pokemon);
+            if(updatedPokemon == null)
             {
                 return NotFound();
             }
-
-            existingPokemon.Name = pokemon.Name;
-            existingPokemon.Type = pokemon.Type;
-            existingPokemon.Level = pokemon.Level;
-
-            return Ok(existingPokemon);
+            return Ok(updatedPokemon);
         }
 
         // DELETE api/<PokemonController>/5
         [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var pokemon = _pokemon.FirstOrDefault(p => p.Id == id);
-            if(pokemon == null)
+            var result = await this._pokemonService.DeletePokemonAsync(id);
+            if(!result)
             {
                 return NotFound();
             }
 
-            _pokemon.Remove(pokemon);
             return Ok();
         }
     }
 }
+
+
