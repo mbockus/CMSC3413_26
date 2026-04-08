@@ -12,6 +12,7 @@ export interface Pokemon {
   types: PokemonTypeModel[];
   level: number;
   hp: number;
+  caughtAt: string; // ISO 8601 date string from API
 }
 
 // DTO for creating a new Pokemon (id will be auto-assigned by server)
@@ -28,6 +29,7 @@ export interface UpdatePokemonDto {
   types: PokemonTypeModel[];
   level: number;
   hp: number;
+  caughtAt?: string;
 }
 
 export interface PokemonType {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Pokemon, UpdatePokemonDto, PokemonTypeModel } from '../../models/pokemon.model';
 import { PokemonService } from '../../services/pokemon.service';
 import { ToastService } from '../../services/toast.service';
@@ -23,6 +23,8 @@ export class PokemonComponent implements OnInit {
     hp: 1
   };
   currentType: string = '';
+  editCaughtDate: NgbDateStruct | null = null;
+  editCaughtTime: NgbTimeStruct = { hour: 12, minute: 0, second: 0 };
 
   constructor(
     private pokemonService: PokemonService,
@@ -66,6 +68,21 @@ export class PokemonComponent implements OnInit {
         level: this.pokemon.level,
         hp: this.pokemon.hp
       };
+
+      // Parse the caught date/time from ISO string
+      if (this.pokemon.caughtAt) {
+        const caughtDateTime = new Date(this.pokemon.caughtAt);
+        this.editCaughtDate = {
+          year: caughtDateTime.getFullYear(),
+          month: caughtDateTime.getMonth() + 1,
+          day: caughtDateTime.getDate()
+        };
+        this.editCaughtTime = {
+          hour: caughtDateTime.getHours(),
+          minute: caughtDateTime.getMinutes(),
+          second: caughtDateTime.getSeconds()
+        };
+      }
     }
   }
 
@@ -100,7 +117,27 @@ export class PokemonComponent implements OnInit {
       return;
     }
 
-    this.pokemonService.updatePokemon(this.pokemon.id, this.editForm).subscribe({
+    if (!this.editCaughtDate) {
+      this.toastService.error('Please select a caught date.');
+      return;
+    }
+
+    // Convert NgbDateStruct and NgbTimeStruct to ISO 8601 UTC string
+    const caughtDateTime = new Date(
+      this.editCaughtDate.year,
+      this.editCaughtDate.month - 1,
+      this.editCaughtDate.day,
+      this.editCaughtTime.hour,
+      this.editCaughtTime.minute,
+      this.editCaughtTime.second
+    );
+
+    const updateData: UpdatePokemonDto = {
+      ...this.editForm,
+      caughtAt: caughtDateTime.toISOString()
+    };
+
+    this.pokemonService.updatePokemon(this.pokemon.id, updateData).subscribe({
       next: () => {
         this.loadPokemon(this.pokemon!.id);
         this.isEditing = false;

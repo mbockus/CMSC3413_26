@@ -15,10 +15,28 @@ namespace Project3.Server.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Configure DateTime to always be treated as UTC
+            var dateTimeConverter = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+            );
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(dateTimeConverter);
+                    }
+                }
+            }
+
             modelBuilder.Entity<Pokemon>().HasData(
-                new Pokemon { Id = 1, Name = "Bulbasaur", Level = 5, HP = 45 },
-                new Pokemon { Id = 2, Name = "Charmander", Level = 5, HP = 39 },
-                new Pokemon { Id = 3, Name = "Squirtle", Level = 5, HP = 44 }
+                new Pokemon { Id = 1, Name = "Bulbasaur", Level = 5, HP = 45, CaughtAt = new DateTime(2024, 1, 15, 10, 30, 0, DateTimeKind.Utc) },
+                new Pokemon { Id = 2, Name = "Charmander", Level = 5, HP = 39, CaughtAt = new DateTime(2024, 2, 20, 14, 45, 30, DateTimeKind.Utc) },
+                new Pokemon { Id = 3, Name = "Squirtle", Level = 5, HP = 44, CaughtAt = new DateTime(2024, 3, 10, 8, 15, 45, DateTimeKind.Utc) }
             );
 
             modelBuilder.Entity<PokemonType>().HasData(

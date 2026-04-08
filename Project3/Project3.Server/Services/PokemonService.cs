@@ -13,6 +13,12 @@ namespace Project3.Server.Services
 
         public async Task<Pokemon> CreatePokemonAsync(Pokemon pokemon)
         {
+            // Set CaughtAt to current UTC time if not provided
+            if (pokemon.CaughtAt == default(DateTime))
+            {
+                pokemon.CaughtAt = DateTime.UtcNow;
+            }
+
             this._context.Pokemons.Add(pokemon);
             await this._context.SaveChangesAsync();
             return pokemon;
@@ -60,6 +66,7 @@ namespace Project3.Server.Services
             existingPokemon.Name = pokemon.Name;
             existingPokemon.Level = pokemon.Level;
             existingPokemon.HP = pokemon.HP;
+            existingPokemon.CaughtAt = pokemon.CaughtAt;
 
             // Remove existing types
             this._context.PokemonTypes.RemoveRange(existingPokemon.Types);

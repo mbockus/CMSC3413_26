@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePokemonDto, PokemonTypeModel } from '../../models/pokemon.model';
 import { PokemonService } from '../../services/pokemon.service';
 import { ToastService } from '../../services/toast.service';
@@ -16,6 +17,8 @@ export class PokemonCreateComponent implements OnInit {
   isSubmitting: boolean = false;
   types: string[] = [];
   currentType: string = '';
+  caughtDate: NgbDateStruct | null = null;
+  caughtTime: NgbTimeStruct = { hour: 12, minute: 0, second: 0 };
 
   constructor(
     private fb: FormBuilder,
@@ -52,14 +55,31 @@ export class PokemonCreateComponent implements OnInit {
       return;
     }
 
+    if (!this.caughtDate) {
+      this.toastService.error('Please select a date when the Pokemon was caught.');
+      return;
+    }
+
     this.isSubmitting = true;
+
+    // Convert NgbDateStruct and NgbTimeStruct to ISO 8601 UTC string
+    const caughtDateTime = new Date(
+      this.caughtDate.year,
+      this.caughtDate.month - 1, // JavaScript months are 0-indexed
+      this.caughtDate.day,
+      this.caughtTime.hour,
+      this.caughtTime.minute,
+      this.caughtTime.second
+    );
+
     const pokemonData: CreatePokemonDto = {
       ...this.createForm.value,
       types: this.types.map((typeName, index) => ({
         id: 0,
         name: typeName,
         pokemonId: 0
-      }))
+      })),
+      caughtAt: caughtDateTime.toISOString() // Send as ISO 8601 UTC string
     };
 
     this.pokemonService.createPokemon(pokemonData).subscribe({
