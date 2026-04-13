@@ -9,6 +9,7 @@ import { PokemonComponent } from './components/pokemon/pokemon.component';
 import { PokedexComponent } from './components/pokedex/pokedex.component';
 import { PokemonCreateComponent } from './components/pokemon-create/pokemon-create.component';
 import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 import { ToastsComponent } from './components/toasts/toasts.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -22,6 +23,7 @@ import { PokemonTypeColorDirective } from './directives/pokemon-type-color.direc
     PokedexComponent,
     PokemonCreateComponent,
     LoginComponent,
+    RegisterComponent,
     ToastsComponent,
     ConfirmDialogComponent,
     PokemonStatRatingPipe,

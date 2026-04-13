@@ -1,25 +1,44 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Project3.Server.Models
 {
-    public class TokenRequest
+    public class RegisterRequest
     {
-        public string code { get; set; } = string.Empty;
-        public string client_id { get; set; } = string.Empty;
-        public string client_secret { get; set; } = string.Empty;
+        [Required]
+        [StringLength(50, MinimumLength = 3)]
+        public string Username { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100, MinimumLength = 8)]
+        public string Password { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
     }
 
-    public class TokenResponse
+    public class LoginRequest
     {
-        public string access_token { get; set; } = string.Empty;
-        public string token_type { get; set; } = string.Empty;
-        public string scope { get; set; } = string.Empty;
+        [Required]
+        public string Username { get; set; } = string.Empty;
+
+        [Required]
+        public string Password { get; set; } = string.Empty;
     }
 
-    public class GitHubUser
+    public class AuthResponse
     {
-        public string login { get; set; } = string.Empty;
-        public int id { get; set; }
-        public string avatar_url { get; set; } = string.Empty;
-        public string name { get; set; } = string.Empty;
+        public string Token { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public DateTime Expiration { get; set; }
+    }
+
+    public class ErrorResponse
+    {
+        public string Message { get; set; } = string.Empty;
+        public List<string>? Errors { get; set; }
     }
 }
+
 

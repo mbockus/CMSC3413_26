@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
-import { TokenResponse } from '../../models/auth.model';
+import { ErrorResponse } from '../../models/auth.model';
 
 @Component({
   selector: 'app-login',
@@ -10,53 +10,57 @@ import { TokenResponse } from '../../models/auth.model';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  loginUrl!: string;
+  loginForm!: FormGroup;
   error: string = '';
   loading: boolean = false;
 
   constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Construct GitHub OAuth URL
-    const redirectUri = `${window.location.origin}/login`;
-    this.loginUrl = `https://github.com/login/oauth/authorize?client_id=${environment.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-    
-    // Check if we're returning from GitHub with a code
-    const code = this.route.snapshot.queryParamMap.get('code');
-    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-    
-    if (code) {
-      this.loading = true;
-      this.authService.requestAccessToken(code).subscribe({
-        next: (tokenResponse: TokenResponse) => {
-          this.authService.setToken(tokenResponse.access_token);
-          const destination = returnUrl || this.authService.getRedirectUrl();
-          this.router.navigateByUrl(destination);
-        },
-        error: (err) => {
-          console.error('Token exchange error:', err);
-          this.error = 'Failed to authenticate. Please try again.';
-          this.loading = false;
-          // Remove code from URL
-          this.router.navigate(['/login'], { 
-            queryParams: returnUrl ? { returnUrl } : {} 
-          });
-        }
-      });
-    } else {
-      // Store return URL if provided
-      if (returnUrl) {
-        this.authService.setRedirectUrl(returnUrl);
-      }
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+
+    // If already authenticated, redirect to home
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/']);
     }
   }
 
-  login(): void {
-    window.location.href = this.loginUrl;
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.error = '';
+    this.loading = true;
+
+    this.authService.login(this.loginForm.value).subscribe({
+      next: () => {
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || 
+                         this.authService.getRedirectUrl();
+        this.router.navigateByUrl(returnUrl);
+      },
+      error: (err) => {
+        console.error('Login error:', err);
+        this.loading = false;
+
+        if (err.error && err.error.message) {
+          this.error = err.error.message;
+        } else if (err.status === 401) {
+          this.error = 'Invalid username or password';
+        } else {
+          this.error = 'Login failed. Please try again.';
+        }
+      }
+    });
   }
 }
+
 

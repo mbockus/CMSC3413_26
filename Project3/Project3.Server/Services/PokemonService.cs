@@ -5,9 +5,9 @@ namespace Project3.Server.Services
 {
     public class PokemonService : IPokemonService
     {
-        private readonly PokemonDbContext _context;
-        
-        public PokemonService(PokemonDbContext context) {
+        private readonly ApplicationDbContext _context;
+
+        public PokemonService(ApplicationDbContext context) {
             this._context = context;
         }
 

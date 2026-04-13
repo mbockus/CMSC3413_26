@@ -1,41 +1,56 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private authService?: AuthService;
+  private router?: Router;
 
   constructor(private injector: Injector) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> { 
     // Skip if Authorization header already exists (prevents circular dependency during init)
     if (req.headers.has('Authorization')) {
       return next.handle(req);
     }
 
-    // Skip token exchange endpoint
-    if (req.url.includes('/api/login') && req.method === 'POST') {
+    // Skip auth endpoints
+    if (req.url.includes('/api/auth/login') || req.url.includes('/api/auth/register')) {
       return next.handle(req);
     }
 
-    // Lazy-load AuthService to avoid circular dependency
+    // Lazy-load services to avoid circular dependency
     if (!this.authService) {
       this.authService = this.injector.get(AuthService);
+    }
+    if (!this.router) {
+      this.router = this.injector.get(Router);
     }
 
     const token = this.authService.getToken();
 
+    let clonedReq = req;
     if (token) {
-      const cloned = req.clone({
+      clonedReq = req.clone({
         headers: req.headers.set('Authorization', `Bearer ${token}`)
       });
-      return next.handle(cloned);
     }
 
-    return next.handle(req);
+    return next.handle(clonedReq).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          // Unauthorized - clear auth and redirect to login
+          this.authService?.logout();
+        }
+        return throwError(() => error);
+      })
+    );
   }
 }
+
 
 

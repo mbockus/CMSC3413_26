@@ -1,25 +1,36 @@
-export interface GitHubUser {
-  login: string;
-  id: number;
-  avatar_url: string;
-  name: string;
+export interface User {
+  username: string;
+  email: string;
+  createdAt?: string;
 }
 
-export interface TokenRequest {
-  code: string;
-  client_id?: string;
-  client_secret?: string;
+export interface RegisterRequest {
+  username: string;
+  password: string;
+  email: string;
 }
 
-export interface TokenResponse {
-  access_token: string;
-  token_type: string;
-  scope: string;
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  username: string;
+  email: string;
+  expiration: string;
+}
+
+export interface ErrorResponse {
+  message: string;
+  errors?: string[];
 }
 
 export interface AuthState {
   isAuthenticated: boolean;
-  user: GitHubUser | null;
+  user: User | null;
   token: string | null;
 }
+
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Project3.Server.Models;
 using Project3.Server.Services;
 
@@ -6,6 +7,7 @@ using Project3.Server.Services;
 
 namespace Project3.Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PokemonController : ControllerBase

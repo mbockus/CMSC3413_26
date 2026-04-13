@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
-import { TokenRequest, TokenResponse, GitHubUser, AuthState } from '../models/auth.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { LoginRequest, RegisterRequest, AuthResponse, ErrorResponse, AuthState, User } from '../models/auth.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly TOKEN_KEY = 'github_token';
+  private readonly TOKEN_KEY = 'auth_token';
+  private readonly USER_KEY = 'auth_user';
   private readonly REDIRECT_KEY = 'redirect_url';
-  private readonly apiUrl = '/api/login';
-  
+  private readonly apiUrl = '/api/auth';
+
   private authStateSubject = new BehaviorSubject<AuthState>({
     isAuthenticated: false,
     user: null,
@@ -20,24 +22,93 @@ export class AuthService {
 
   public authState$ = this.authStateSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {
     this.initializeAuth();
   }
 
   private initializeAuth(): void {
     const token = this.getStoredToken();
-    if (token) {
-      // Set authenticated immediately, then fetch user profile
+    const user = this.getStoredUser();
+
+    if (token && user) {
       this.authStateSubject.next({
         isAuthenticated: true,
-        user: null,
+        user: user,
         token: token
       });
-      
-      this.fetchUserProfile(token).subscribe({
+
+      // Verify token is still valid
+      this.getCurrentUser().subscribe({
         error: () => this.clearAuth()
       });
     }
+  }
+
+  register(request: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
+      tap(response => this.handleAuthSuccess(response)),
+      catchError(this.handleError)
+    );
+  }
+
+  login(request: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
+      tap(response => this.handleAuthSuccess(response)),
+      catchError(this.handleError)
+    );
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/me`).pipe(
+      tap(user => {
+        const currentState = this.authStateSubject.value;
+        this.authStateSubject.next({
+          ...currentState,
+          user: user
+        });
+        this.storeUser(user);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  logout(): void {
+    this.clearAuth();
+    this.router.navigate(['/login']);
+  }
+
+  private handleAuthSuccess(response: AuthResponse): void {
+    const user: User = {
+      username: response.username,
+      email: response.email
+    };
+
+    this.storeToken(response.token);
+    this.storeUser(user);
+
+    this.authStateSubject.next({
+      isAuthenticated: true,
+      user: user,
+      token: response.token
+    });
+  }
+
+  private clearAuth(): void {
+    this.removeStoredToken();
+    this.removeStoredUser();
+    this.authStateSubject.next({
+      isAuthenticated: false,
+      user: null,
+      token: null
+    });
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('Auth error:', error);
+    return throwError(() => error);
   }
 
   setRedirectUrl(url: string): void {
@@ -50,56 +121,6 @@ export class AuthService {
     return url;
   }
 
-  requestAccessToken(code: string): Observable<TokenResponse> {
-    const request: TokenRequest = { code };
-    return this.http.post<TokenResponse>(this.apiUrl, request);
-  }
-
-  setToken(token: string): void {
-    this.storeToken(token);
-    this.authStateSubject.next({
-      isAuthenticated: true,
-      user: null,
-      token: token
-    });
-    
-    // Fetch user profile in background
-    this.fetchUserProfile(token).subscribe();
-  }
-
-  private fetchUserProfile(token: string): Observable<GitHubUser> {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
-    return this.http.get<GitHubUser>(`${this.apiUrl}/user`, { headers }).pipe(
-      tap(user => {
-        this.authStateSubject.next({
-          isAuthenticated: true,
-          user: user,
-          token: token
-        });
-      }),
-      catchError(error => {
-        console.error('Error fetching user profile:', error);
-        return of({} as GitHubUser);
-      })
-    );
-  }
-
-  logout(): void {
-    this.clearAuth();
-  }
-
-  private clearAuth(): void {
-    this.removeStoredToken();
-    this.authStateSubject.next({
-      isAuthenticated: false,
-      user: null,
-      token: null
-    });
-  }
-
   getToken(): string | null {
     return this.authStateSubject.value.token;
   }
@@ -108,7 +129,7 @@ export class AuthService {
     return this.authStateSubject.value.isAuthenticated;
   }
 
-  getCurrentUser(): GitHubUser | null {
+  getUser(): User | null {
     return this.authStateSubject.value.user;
   }
 
@@ -123,5 +144,19 @@ export class AuthService {
   private removeStoredToken(): void {
     localStorage.removeItem(this.TOKEN_KEY);
   }
+
+  private storeUser(user: User): void {
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+  }
+
+  private getStoredUser(): User | null {
+    const userJson = localStorage.getItem(this.USER_KEY);
+    return userJson ? JSON.parse(userJson) : null;
+  }
+
+  private removeStoredUser(): void {
+    localStorage.removeItem(this.USER_KEY);
+  }
 }
+
 
