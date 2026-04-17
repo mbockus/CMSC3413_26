@@ -1,6 +1,8 @@
-﻿namespace Project3.Server.Models
+﻿using Project3.Server.Models;
+
+namespace Project3.Server.ViewModel
 {
-    public class Pokemon
+    public class PokemonDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -8,10 +10,5 @@
         public int Level { get; set; }
         public int HP { get; set; }
         public DateTime CaughtAt { get; set; }
-
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-
-
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,12 @@ namespace Project3.Server.Models
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Pokemon>().
+                HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Configure DateTime to always be treated as UTC
             var dateTimeConverter = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
                 v => v.ToUniversalTime(),
@@ -33,10 +40,28 @@ namespace Project3.Server.Models
                 }
             }
 
+            var testUserId = "mbockus";
+            var hasher = new PasswordHasher<ApplicationUser>();
+
+            var testUser = new ApplicationUser
+            {
+                Id = testUserId,
+                UserName = "mbockus",
+                NormalizedUserName = "MBOCKUS",
+                Email = "mbockus@uco.edu",
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+            };
+
+            testUser.PasswordHash = hasher.HashPassword(testUser, "P@ssw0rd");
+
+            modelBuilder.Entity<ApplicationUser>().HasData(testUser);
+
+
             modelBuilder.Entity<Pokemon>().HasData(
-                new Pokemon { Id = 1, Name = "Bulbasaur", Level = 5, HP = 45, CaughtAt = new DateTime(2024, 1, 15, 10, 30, 0, DateTimeKind.Utc) },
-                new Pokemon { Id = 2, Name = "Charmander", Level = 5, HP = 39, CaughtAt = new DateTime(2024, 2, 20, 14, 45, 30, DateTimeKind.Utc) },
-                new Pokemon { Id = 3, Name = "Squirtle", Level = 5, HP = 44, CaughtAt = new DateTime(2024, 3, 10, 8, 15, 45, DateTimeKind.Utc) }
+                new Pokemon { Id = 1, Name = "Bulbasaur", Level = 5, HP = 45, CaughtAt = new DateTime(2024, 1, 15, 10, 30, 0, DateTimeKind.Utc), UserId = testUserId },
+                new Pokemon { Id = 2, Name = "Charmander", Level = 5, HP = 39, CaughtAt = new DateTime(2024, 2, 20, 14, 45, 30, DateTimeKind.Utc), UserId = testUserId },
+                new Pokemon { Id = 3, Name = "Squirtle", Level = 5, HP = 44, CaughtAt = new DateTime(2024, 3, 10, 8, 15, 45, DateTimeKind.Utc), UserId = testUserId }
             );
 
             modelBuilder.Entity<PokemonType>().HasData(

@@ -11,7 +11,7 @@ namespace Project3.Server.Services
             this._context = context;
         }
 
-        public async Task<Pokemon> CreatePokemonAsync(Pokemon pokemon)
+        public async Task<Pokemon> CreatePokemonAsync(Pokemon pokemon, string userId)
         {
             // Set CaughtAt to current UTC time if not provided
             if (pokemon.CaughtAt == default(DateTime))
@@ -19,14 +19,15 @@ namespace Project3.Server.Services
                 pokemon.CaughtAt = DateTime.UtcNow;
             }
 
+            pokemon.UserId = userId;
             this._context.Pokemons.Add(pokemon);
             await this._context.SaveChangesAsync();
             return pokemon;
         }
 
-        public async Task<bool> DeletePokemonAsync(int id)
+        public async Task<bool> DeletePokemonAsync(int id, string userId)
         {
-            var existingPokemon = await this._context.Pokemons.FindAsync(id);
+            var existingPokemon = await this._context.Pokemons.FirstOrDefaultAsync(p=> p.Id == id && p.UserId == userId);
             if (existingPokemon == null)
             {
                 return false;
@@ -38,25 +39,26 @@ namespace Project3.Server.Services
 
         }
 
-        public async Task<IEnumerable<Pokemon>> GetAllPokemonAsync()
+        public async Task<IEnumerable<Pokemon>> GetAllPokemonAsync(string userId)
         {
             return await this._context.Pokemons
+                .Where(p => p.UserId == userId)
                 .Include(p => p.Types)
                 .ToListAsync();
         }
 
-        public async Task<Pokemon?> GetPokemonByIdAsync(int id)
+        public async Task<Pokemon?> GetPokemonByIdAsync(int id, string userId)
         {
             return await this._context.Pokemons
                 .Include(p => p.Types)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
         }
 
-        public async Task<Pokemon> UpdatePokemonAsync(Pokemon pokemon)
+        public async Task<Pokemon> UpdatePokemonAsync(Pokemon pokemon, string userId)
         {
             var existingPokemon = await this._context.Pokemons
                 .Include(p => p.Types)
-                .FirstOrDefaultAsync(p => p.Id == pokemon.Id);
+                .FirstOrDefaultAsync(p => p.Id == pokemon.Id && p.UserId == userId);
 
             if (existingPokemon == null)
             {
