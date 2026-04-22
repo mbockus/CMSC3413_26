@@ -108,19 +108,26 @@ stages:
     # Deploy using curl with deployment credentials
     - task: Bash@3
       displayName: 'Deploy to App Service via Kudu API'
+      env:
+        WEBAPP_NAME: $(AZURE_WEBAPP_NAME)
+        WEBAPP_USERNAME: $(AZURE_WEBAPP_USERNAME)
+        WEBAPP_PASSWORD: $(AZURE_WEBAPP_PASSWORD)
       inputs:
         targetType: 'inline'
         script: |
           # Find the zip file
           ZIP_FILE=$(find $(System.ArtifactsDirectory)/drop -name "*.zip" | head -n 1)
           echo "Deploying: $ZIP_FILE"
+          echo "App Service: $WEBAPP_NAME"
 
           # Deploy using Kudu ZipDeploy API
           curl -X POST \
-            -u "$(AZURE_WEBAPP_USERNAME):$(AZURE_WEBAPP_PASSWORD)" \
+            -u "$WEBAPP_USERNAME:$WEBAPP_PASSWORD" \
             -H "Content-Type: application/zip" \
             --data-binary "@$ZIP_FILE" \
-            "https://$(AZURE_WEBAPP_NAME).scm.azurewebsites.net/api/zipdeploy"
+            "https://$WEBAPP_NAME.scm.azurewebsites.net/api/zipdeploy" \
+            -w "\nHTTP Status: %{http_code}\n" \
+            --fail-with-body
 
           # Check deployment status
           if [ $? -eq 0 ]; then
