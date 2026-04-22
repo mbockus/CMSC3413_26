@@ -54,6 +54,15 @@ namespace Project3.Server.Services
                 .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
         }
 
+        public async Task<IEnumerable<Pokemon>> GetPokemonByTypesAsync(List<string> types, string userId)
+        {
+            return await this._context.Pokemons
+                .Where(p => p.UserId == userId)
+                .Include(p => p.Types)
+                .Where(p => types.All(typeName => p.Types.Any(t=> t.Name == typeName)))
+                .ToListAsync();
+        }
+
         public async Task<Pokemon> UpdatePokemonAsync(Pokemon pokemon, string userId)
         {
             var existingPokemon = await this._context.Pokemons

@@ -81,7 +81,7 @@ namespace Project3.Server.Controllers
                 CaughtAt = pokemon.CaughtAt
             };
             var updatedPokemon = await this._pokemonService.UpdatePokemonAsync(pokemonEntity, userId);
-            if(updatedPokemon == null)
+            if (updatedPokemon == null)
             {
                 return NotFound();
             }
@@ -94,12 +94,20 @@ namespace Project3.Server.Controllers
         {
             var userId = GetUserId();
             var result = await this._pokemonService.DeletePokemonAsync(id, userId);
-            if(!result)
+            if (!result)
             {
                 return NotFound();
             }
 
             return Ok();
+        }
+
+        [HttpGet("withAllTypes")]
+        public async Task<ActionResult<IEnumerable<Pokemon>>> GetByTypes([FromQuery] List<string> types)
+        {
+            var userId = GetUserId();
+            var pokemon = await this._pokemonService.GetPokemonByTypesAsync(types, userId);
+            return Ok(pokemon);
         }
     }
 }

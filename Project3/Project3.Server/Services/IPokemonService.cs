@@ -9,5 +9,6 @@ namespace Project3.Server.Services
         Task<Pokemon> CreatePokemonAsync(Pokemon pokemon, string userId);
         Task<Pokemon> UpdatePokemonAsync(Pokemon pokemon, string userId);
         Task<bool> DeletePokemonAsync(int id, string userId);
+        Task<IEnumerable<Pokemon>> GetPokemonByTypesAsync(List<string> names, string userId);
     }
 }

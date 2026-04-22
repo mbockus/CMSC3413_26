@@ -1,16 +1,11 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private authService?: AuthService;
-  private router?: Router;
-
-  constructor(private injector: Injector) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> { 
     // Skip if Authorization header already exists (prevents circular dependency during init)
@@ -23,15 +18,10 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    // Lazy-load services to avoid circular dependency
-    if (!this.authService) {
-      this.authService = this.injector.get(AuthService);
-    }
-    if (!this.router) {
-      this.router = this.injector.get(Router);
-    }
-
-    const token = this.authService.getToken();
+    // Use inject() to get AuthService - this avoids circular dependency
+    // and works correctly in production builds with tree-shaking
+    const authService = inject(AuthService);
+    const token = authService.getToken();
 
     let clonedReq = req;
     if (token) {
@@ -44,7 +34,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Unauthorized - clear auth and redirect to login
-          this.authService?.logout();
+          authService.logout();
         }
         return throwError(() => error);
       })
