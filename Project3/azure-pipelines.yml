@@ -88,4 +88,44 @@ stages:
         ArtifactName: 'drop'
         publishLocation: 'Container'
 
+- stage: Deploy
+  displayName: 'Deploy to Azure App Service'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - job: DeployJob
+    displayName: 'Deploy using Deployment Credentials'
+    steps:
+    # Download the artifact
+    - task: DownloadBuildArtifacts@1
+      displayName: 'Download Build Artifact'
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
 
+    # Deploy using curl with deployment credentials
+    - task: Bash@3
+      displayName: 'Deploy to App Service via Kudu API'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Find the zip file
+          ZIP_FILE=$(find $(System.ArtifactsDirectory)/drop -name "*.zip" | head -n 1)
+          echo "Deploying: $ZIP_FILE"
+
+          # Deploy using Kudu ZipDeploy API
+          curl -X POST \
+            -u "$(AZURE_WEBAPP_USERNAME):$(AZURE_WEBAPP_PASSWORD)" \
+            -H "Content-Type: application/zip" \
+            --data-binary "@$ZIP_FILE" \
+            "https://$(AZURE_WEBAPP_NAME).scm.azurewebsites.net/api/zipdeploy"
+
+          # Check deployment status
+          if [ $? -eq 0 ]; then
+            echo "Deployment successful!"
+          else
+            echo "Deployment failed!"
+            exit 1
+          fi
